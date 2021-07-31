@@ -1,0 +1,10 @@
+.info {
+  display: flex;
+  flex-direction: column;
+  height: 240px;
+  justify-content: start;
+}
+
+.info > button {
+  margin-top: 1rem;
+}

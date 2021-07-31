@@ -1,0 +1,25 @@
+.spacer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  z-index: 1;
+  width: 100%;
+}
+.spacer > h4 > a,
+.spacer > h4 > a:hover,
+.spacer > h4 > a:active,
+.spacer > h4 > a:visited {
+  color: white;
+}
+
+.square {
+  width: 30px;
+  height: 20px;
+  border-radius: 2px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 35px;
+}
