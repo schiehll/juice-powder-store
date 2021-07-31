@@ -1,8 +1,8 @@
 import Head from "next/head";
-import Image from "next/image";
-import { Card, Space } from "antd";
-import { useRouter } from "next/dist/client/router";
+import { Card, Col, Row, Space, Image, Typography } from "antd";
 import { client } from "../lib/shopify";
+import { ShoppingOutlined } from "@ant-design/icons";
+import useCart from "../hooks/useCart";
 
 export const getServerSideProps = async (context) => {
   const products = await client.product.fetchAll(); // Fetch products
@@ -17,7 +17,16 @@ export const getServerSideProps = async (context) => {
 };
 
 export default function Home({ infos, products }) {
-  const router = useRouter();
+  const { addItemToCart, setCart } = useCart();
+
+  const addToCart = async (product) => {
+    const cart = await addItemToCart({
+      variantId: product.variants[0].id,
+      quantity: 1,
+    });
+
+    setCart(cart);
+  };
 
   return (
     <div>
@@ -28,31 +37,47 @@ export default function Home({ infos, products }) {
       </Head>
 
       <main>
-        <Space size="large">
+        <Row gutter={24}>
           {products.map((product) => {
             return (
-              <Card
-                key={product.id}
-                hoverable
-                onClick={() => router.push(`/product/${product.id}`)}
-                style={{ width: 240 }}
-                cover={
-                  <Image
-                    width="240px"
-                    height="240px"
-                    alt={product.description}
-                    src={product.images[0].src}
+              <Col key={product.id}>
+                <Card
+                  style={{ width: 240 }}
+                  cover={
+                    <Image
+                      width="240px"
+                      height="240px"
+                      alt={product.description}
+                      src={product.images[0].src}
+                    />
+                  }
+                  actions={[
+                    <a
+                      key="buy"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        addToCart(product);
+                      }}
+                    >
+                      <Space>
+                        <span>
+                          {product.variants[0].priceV2.currencyCode}
+                          {product.variants[0].priceV2.amount}
+                        </span>
+                        <ShoppingOutlined />
+                      </Space>
+                    </a>,
+                  ]}
+                >
+                  <Card.Meta
+                    title={product.title}
+                    description={product.description}
                   />
-                }
-              >
-                <Card.Meta
-                  title={product.title}
-                  description={product.description}
-                />
-              </Card>
+                </Card>
+              </Col>
             );
           })}
-        </Space>
+        </Row>
       </main>
     </div>
   );
